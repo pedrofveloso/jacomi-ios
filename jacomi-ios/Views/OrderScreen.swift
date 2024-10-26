@@ -18,10 +18,12 @@ struct OrderScreen: View {
 
             Section("Pedido") {
                 TextField("Nome", text: $order.name)
-                DatePicker("Data do pedido", selection: $order.date)
+                DatePicker("Data do pedido", selection: $order.date, displayedComponents: .date)
                 Toggle("Pediria de novo", isOn: $order.wouldOrderAgain)
             }
         }
+        .navigationTitle("Detalhes do Pedido")
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 

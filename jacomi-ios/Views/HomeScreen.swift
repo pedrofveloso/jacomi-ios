@@ -10,7 +10,7 @@ import SwiftUI
 
 struct HomeScreen: View {
     @Environment(\.modelContext) var modelContext
-    @Query var orders: [Order]
+    @Query(sort: \Order.date, order: .reverse) var orders: [Order]
 
     @State private var navStackRoot = [Order]()
 
@@ -28,6 +28,7 @@ struct HomeScreen: View {
                         }
                     }
                 }
+                .onDelete(perform: deleteOrders(_:))
             }
             .navigationDestination(for: Order.self, destination: OrderScreen.init)
             .navigationTitle("Ja Comi")
@@ -44,12 +45,11 @@ struct HomeScreen: View {
         }
     }
 
-    private func addSamples() {
-        let order1 = Order(name: "Pizza de Mussarela", store: "Di Monstro")
-        let order2 = Order(name: "Esfirra de carne", store: "Saj")
-
-        modelContext.insert(order1)
-        modelContext.insert(order2)
+    private func deleteOrders(_ indexSet: IndexSet) {
+        for index in indexSet {
+            let order = orders[index]
+            modelContext.delete(order)
+        }
     }
 }
 
