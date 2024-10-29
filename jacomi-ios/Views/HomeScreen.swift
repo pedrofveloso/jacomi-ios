@@ -13,11 +13,18 @@ struct HomeScreen: View {
     @Query(sort: \Order.date, order: .reverse) var orders: [Order]
 
     @State private var navStackRoot = [Order]()
+    @State private var searchText: String = ""
+
+    private var filteredOrders: [Order] {
+        orders.filter { order in
+            order.name.starts(with: searchText)
+        }
+    }
 
     var body: some View {
         NavigationStack(path: $navStackRoot) {
             List {
-                ForEach(orders) { order in
+                ForEach(filteredOrders) { order in
                     NavigationLink(value: order) {
                         VStack(alignment: .leading) {
                             Text(order.name)
@@ -30,6 +37,7 @@ struct HomeScreen: View {
                 }
                 .onDelete(perform: deleteOrders(_:))
             }
+            .searchable(text: $searchText)
             .navigationDestination(for: Order.self, destination: OrderScreen.init)
             .navigationTitle("Ja Comi")
             .toolbar {
